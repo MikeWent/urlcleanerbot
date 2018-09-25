@@ -15,10 +15,10 @@ except FileNotFoundError:
 bot = telebot.TeleBot(telegram_token)
 
 def filter_query_string(domain, query):
-    PARAMS_WHITELIST = ("item", "id")
+    PARAMS_WHITELIST = ("item", "id", "text", "q")
     DOMAIN_PARAMS_WHITELIST = {
-        "duckduckgo.com": ("q", "p", "ia", "iax", "iar"),
-        "google.com": ("q", "tbm", "hl", "chips")
+        "duckduckgo.com": ("p", "ia", "iax", "iar"),
+        "google.com": ("tbm", "hl", "chips")
     }
     whitelist = PARAMS_WHITELIST + DOMAIN_PARAMS_WHITELIST.get(domain, tuple())
     params = parse_qs(query)
