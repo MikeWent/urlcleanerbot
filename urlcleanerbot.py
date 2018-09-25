@@ -3,6 +3,7 @@
 from urllib.parse import urlparse, parse_qs, urlencode, urljoin
 import re
 
+from telebot import types
 import telebot
 
 try:
@@ -30,7 +31,7 @@ def cleanup(url):
     filtered_query = filter_query_string(domain, u.query)
     final_url = urljoin(u.scheme + "://" + u.netloc, u.path)
     final_url = urljoin(final_url, "?" + filtered_query)
-    return final_url
+    return domain, final_url
     
 # Handle URLs
 URL_REGEXP = r'(.*\..*/.*?\?.*)'
@@ -42,10 +43,29 @@ def handle_urls(message):
     for url in urls:
         if not url.startswith("http"):
             url = "http://"+url
-        response_message += cleanup(url)+"\n"
+        response_message += cleanup(url)[0]+"\n"
     try:
         bot.reply_to(message, response_message)
     except:
         pass
+
+
+# Inline mode
+@bot.inline_handler(lambda query: re.match(URL_REGEXP, query.query))
+def query_text(inline_query):
+    domain, clean_url = cleanup(inline_query.query)
+    r = [types.InlineQueryResultArticle(hash(clean_url), domain,
+            types.InputTextMessageContent(clean_url),
+            url=clean_url
+         ),
+         types.InlineQueryResultArticle(hash(clean_url)+1, domain+" (no preview)",
+            types.InputTextMessageContent(
+                clean_url,
+                disable_web_page_preview=True
+            ),
+            description=clean_url
+         )
+    ]
+    bot.answer_inline_query(inline_query.id, results=r)
 
 bot.polling()
