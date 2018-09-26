@@ -27,9 +27,9 @@ def filter_query_string(domain, query):
     
 def cleanup(url):
     u = urlparse(url)
-    domain = u.netloc.replace("www.", "")
+    domain = u.netloc.replace("www.", "").replace("m.", "")
     filtered_query = filter_query_string(domain, u.query)
-    final_url = urljoin(u.scheme + "://" + u.netloc, u.path)
+    final_url = urljoin(u.scheme + "://" + domain, u.path)
     final_url = urljoin(final_url, "?" + filtered_query)
     return domain, final_url
     
