@@ -43,7 +43,7 @@ def handle_urls(message):
     for url in urls:
         if not url.startswith("http"):
             url = "http://"+url
-        response_message += cleanup(url)[0]+"\n"
+        response_message += cleanup(url)[1]+"\n"
     try:
         bot.reply_to(message, response_message)
     except:
