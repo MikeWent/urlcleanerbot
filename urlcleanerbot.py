@@ -33,8 +33,8 @@ def cleanup(url):
     domain_to_use = filtered_domain if not filtered_domain in DOMAIN_FILTER_BLACKLIST else u.netloc
     final_url = urljoin(u.scheme + "://" + u.netloc, u.path)
     final_url = urljoin(final_url, "?" + filtered_query)
-    return domain, final_url
-    
+    return domain_to_use, final_url
+
 # Handle URLs
 URL_REGEXP = r'(.*\..*/.*?\?.*)'
 @bot.message_handler(regexp=URL_REGEXP)
