@@ -26,10 +26,12 @@ def filter_query_string(domain, query):
     return urlencode(filtered_params_dict)
     
 def cleanup(url):
+    DOMAIN_FILTER_BLACKLIST = ("aliexpress.com")
     u = urlparse(url)
-    domain = u.netloc.replace("www.", "").replace("m.", "")
-    filtered_query = filter_query_string(domain, u.query)
-    final_url = urljoin(u.scheme + "://" + domain, u.path)
+    filtered_domain = u.netloc.replace("www.", "").replace("m.", "")
+    filtered_query = filter_query_string(filtered_domain, u.query)
+    domain_to_use = filtered_domain if not filtered_domain in DOMAIN_FILTER_BLACKLIST else u.netloc
+    final_url = urljoin(u.scheme + "://" + u.netloc, u.path)
     final_url = urljoin(final_url, "?" + filtered_query)
     return domain, final_url
     
